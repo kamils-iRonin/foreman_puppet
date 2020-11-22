@@ -78,8 +78,12 @@ jobs:
       fail-fast: true
       matrix:
         foreman-core-branch: [hostgroup_facet-tempate_input]
-        ruby-version: [2.5, 2.6]
+        ruby-version: [2.5]
         node-version: [12]
+        include:
+          - foreman-core-branch: puppet_extraction
+            ruby-version: 2.7
+            node-version: 14
     steps:
       - run: sudo apt-get install build-essential libcurl4-openssl-dev zlib1g-dev libpq-dev
       - name: Install chromedriver
@@ -123,6 +127,8 @@ jobs:
         if: github.event_name != 'push'
         run: |
           bundle exec rake test:foreman_puppet
+        env:
+          PUPPET_EXTRACTED: ${{ matrix.foreman-core-branch == 'puppet_extraction' && '1' }}
       - name: Upload test.log
         uses: actions/upload-artifact@v2
         if: failure() && github.event_name != 'push'

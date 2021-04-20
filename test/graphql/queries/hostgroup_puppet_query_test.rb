@@ -23,6 +23,9 @@ module Queries
           puppetProxy {
             id
           }
+          puppetCaProxy {
+            id
+          }
         }
       }
       GRAPHQL
@@ -40,6 +43,7 @@ module Queries
       assert_record hostgroup.puppet.environment, hostgroup_data['environment']
       assert_collection hostgroup.puppetclasses, data['puppetclasses']
       assert_record hostgroup.puppet_proxy, hostgroup_data['puppetProxy']
+      assert_record hostgroup.puppet_ca_proxy, hostgroup_data['puppetCaProxy']
     end
   end
 end

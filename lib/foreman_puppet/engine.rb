@@ -24,6 +24,7 @@ module ForemanPuppet
     end
 
     # Include concerns in this config.to_prepare block
+    # rubocop:disable Metrics/BlockLength
     config.to_prepare do
       # Parameters should go ASAP as they need to be applied before they are included in core controller
       Foreman::Controller::Parameters::Host.include ForemanPuppet::Extensions::ParametersHost
@@ -65,7 +66,17 @@ module ForemanPuppet
       end
       Foreman.input_types_registry.register(ForemanPuppet::InputType::PuppetParameterInput)
       ::ProxyStatus.status_registry.add(ForemanPuppet::ProxyStatus::Puppet)
+
+      # GraphQL
+      if ForemanPuppet.extracted_from_core?
+        ::Types::Host.include(ForemanPuppet::Types::HostExtensions)
+        ::Types::Hostgroup.include(ForemanPuppet::Types::HostgroupExtensions)
+        ::Types::Location.include(ForemanPuppet::Types::LocationExtensions)
+        ::Types::Organization.include(ForemanPuppet::Types::OrganizationExtensions)
+        ::Mutations::Hosts::Create.include(ForemanPuppet::Mutations::Hosts::CreateExtensions)
+      end
     end
+    # rubocop:enable Metrics/BlockLength
 
     rake_tasks do
       Rake::Task['db:seed'].enhance do

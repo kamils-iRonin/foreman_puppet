@@ -3,6 +3,7 @@ module ForemanPuppet
   # mostly for template rendering consistency
   module HostCommon
     extend ActiveSupport::Concern
+    include ::BelongsToProxies
 
     included do
       belongs_to :environment
@@ -10,6 +11,18 @@ module ForemanPuppet
       has_many :config_groups, through: :host_config_groups
       has_many :config_group_classes, through: :config_groups
       has_many :group_puppetclasses, through: :config_groups, source: :puppetclasses
+
+      belongs_to_proxy :puppet_proxy,
+        feature: N_('Puppet'),
+        label: N_('Puppet Proxy'),
+        description: N_('Use the Puppetserver configured on this Smart Proxy'),
+        api_description: N_('Puppet proxy ID')
+
+      belongs_to_proxy :puppet_ca_proxy,
+        feature: 'Puppet CA',
+        label: N_('Puppet CA Proxy'),
+        description: N_('Use the Puppetserver CA configured on this Smart Proxy'),
+        api_description: N_('Puppet CA proxy ID')
 
       alias_method :all_puppetclasses, :classes
     end

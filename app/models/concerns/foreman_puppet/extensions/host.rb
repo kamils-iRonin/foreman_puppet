@@ -9,6 +9,9 @@ module ForemanPuppet
         env_assoc = reflect_on_association(:environment)
         env_assoc&.instance_variable_set(:@class_name, 'ForemanPuppet::Environment')
 
+        host_classes_assoc = reflect_on_association(:host_classes)
+        host_classes_assoc&.instance_variable_set(:@class_name, 'ForemanPuppet::HostClass')
+
         include_in_clone puppet: %i[config_groups host_config_groups host_classes]
 
         scoped_search relation: :environment, on: :name, complete_value: true, rename: :environment

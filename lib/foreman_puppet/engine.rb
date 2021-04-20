@@ -1,5 +1,24 @@
 module ForemanPuppet
   class Engine < ::Rails::Engine
+    config.before_configuration do
+      unless ForemanPuppet.extracted_from_core?
+        require 'graphql'
+
+        module BaseObjectClassMethodPath
+          def field(*args, **kwargs, &block)
+            return if args.first == :environment && args.second.to_s == 'Types::Environment'
+            return if args.first == :environments && args.second.node_type.to_s == 'Types::Environment'
+            return if args.first == :puppetclass && args.second.to_s == 'Types::Puppetclass'
+            return if args.first == :puppetclasses && args.second.node_type.to_s == 'Types::Puppetclass'
+
+            super
+          end
+        end
+
+        GraphQL::Types::Relay::BaseObject.extend(BaseObjectClassMethodPath)
+      end
+    end
+
     engine_name 'foreman_puppet'
     isolate_namespace ForemanPuppet
 
@@ -24,6 +43,7 @@ module ForemanPuppet
     end
 
     # Include concerns in this config.to_prepare block
+    # rubocop:disable Metrics/BlockLength
     config.to_prepare do
       # Parameters should go ASAP as they need to be applied before they are included in core controller
       Foreman::Controller::Parameters::Host.include ForemanPuppet::Extensions::ParametersHost
@@ -65,7 +85,16 @@ module ForemanPuppet
       end
       Foreman.input_types_registry.register(ForemanPuppet::InputType::PuppetParameterInput)
       ::ProxyStatus.status_registry.add(ForemanPuppet::ProxyStatus::Puppet)
+
+      # GraphQL
+      ::Types::Host.include(ForemanPuppet::Types::HostExtensions)
+      ::Types::Location.include(ForemanPuppet::Types::LocationExtensions)
+      ::Types::Organization.include(ForemanPuppet::Types::OrganizationExtensions)
+      ::Mutations::Hosts::Create.include(ForemanPuppet::Mutations::Hosts::CreateExtensions)
+    rescue StandardError => e
+      Rails.logger.warn "ForemanPuppet: skipping engine hook (#{e})\n#{e.backtrace.join("\n")}"
     end
+    # rubocop:enable Metrics/BlockLength
 
     rake_tasks do
       Rake::Task['db:seed'].enhance do

@@ -1,4 +1,5 @@
 require 'test_puppet_helper'
+
 module ForemanPuppet
   module Api
     module V2

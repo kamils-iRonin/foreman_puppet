@@ -33,7 +33,7 @@ module Queries
     test 'fetching puppetclasses attributes' do
       assert_empty result['errors']
 
-      expected_count = Puppetclass.count
+      expected_count = ForemanPuppet::Puppetclass.count
 
       assert_not_equal 0, expected_count
       assert_equal expected_count, data['totalCount']

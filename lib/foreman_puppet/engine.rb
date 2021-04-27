@@ -69,12 +69,12 @@ module ForemanPuppet
 
       # GraphQL
       if ForemanPuppet.extracted_from_core?
-        ::Types::Host.include(ForemanPuppet::Types::HostExtensions)
-        ::Types::Hostgroup.include(ForemanPuppet::Types::HostgroupExtensions)
         ::Types::Location.include(ForemanPuppet::Types::LocationExtensions)
         ::Types::Organization.include(ForemanPuppet::Types::OrganizationExtensions)
         ::Mutations::Hosts::Create.include(ForemanPuppet::Mutations::Hosts::CreateExtensions)
       end
+    rescue StandardError => e
+      Rails.logger.warn "ForemanPuppet: skipping engine hook (#{e})\n#{e.backtrace.join("\n")}"
     end
     # rubocop:enable Metrics/BlockLength
 

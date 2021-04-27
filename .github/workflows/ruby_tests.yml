@@ -38,7 +38,7 @@ jobs:
       - run: sudo apt-get install build-essential libcurl4-openssl-dev zlib1g-dev libpq-dev
       - uses: actions/checkout@v2
         with:
-          repository: ezr-ondrej/foreman
+          repository: kamils-iRonin/foreman
           ref: plugin_base_rake
           path: foreman
       - uses: actions/checkout@v2
@@ -69,7 +69,7 @@ jobs:
     # needs: rubocop
     env:
       BUNDLE_WITHOUT: journald:development:console:libvirt
-      PUPPET_EXTRACTED: 1
+      PUPPET_EXTRACTED: ${{ matrix.puppet-extracted }}
     services:
       postgres:
         image: postgres:12.1
@@ -78,16 +78,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        foreman-core-branch: [puppet_extraction]
-        ruby-version: [2.5, 2.6]
+        foreman-core-branch: [develop, puppet_extraction]
+        ruby-version: [2.6]
         node-version: [12]
+        puppet-extracted: [0, 1]
     steps:
       - run: sudo apt-get install build-essential libcurl4-openssl-dev zlib1g-dev libpq-dev
       - name: Install chromedriver
         uses: nanasess/setup-chromedriver@master
       - uses: actions/checkout@v2
         with:
-          repository: ezr-ondrej/foreman
+          repository: kamils-iRonin/foreman
           ref: ${{ matrix.foreman-core-branch }}
       - uses: actions/checkout@v2
         with:

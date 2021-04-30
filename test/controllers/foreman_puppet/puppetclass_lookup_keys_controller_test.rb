@@ -4,10 +4,11 @@ module ForemanPuppet
   class PuppetclassLookupKeysControllerTest < ActionController::TestCase
     setup do
       @routes = ForemanPuppet::Engine.routes
-      @factory_options = [{ puppetclass: puppetclasses(:one), override: true, default_value: 'test' }]
+      @factory_options = [{ puppetclass: puppetclass, override: true, default_value: 'test' }]
     end
 
-    let(:lookup_key) { FactoryBot.create(:puppetclass_lookup_key, puppetclass: puppetclasses(:one), override: true) }
+    let(:puppetclass) { FactoryBot.create(:puppetclass) }
+    let(:lookup_key) { FactoryBot.create(:puppetclass_lookup_key, puppetclass: puppetclass, override: true) }
 
     basic_pagination_rendered_test
     basic_pagination_per_page_test

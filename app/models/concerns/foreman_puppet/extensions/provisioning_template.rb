@@ -32,10 +32,10 @@ module ForemanPuppet
             conditions[:hostgroup_id] = hosts_or_conditions.pluck(:hostgroup_id) | [nil]
             conditions[:environment_id] = hosts_or_conditions.pluck(:environment_id) | [nil]
           end
-          at = TemplateCombination.arel_table
-          arel = at[:hostgroup_id].in(conditions[:hostgroup_id])
-          arel = arel.and(at[:environment_id].in(conditions[:environment_id]))
-          templates.joins(:template_combinations).where(arel).distinct
+          templates.joins(:template_combinations)
+                   .where(template_combinations: { hostgroup_id: conditions[:hostgroup_id] })
+                   .where(template_combinations: { environment_id: conditions[:environment_id] })
+                   .distinct
         end
 
         def template_includes

@@ -38,9 +38,9 @@ module ForemanPuppet
 
     describe '#parent_classes' do
       test 'should return parent_classes if host has hostgroup and environment are the same' do
-        hostgroup        = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass)
-        host             = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup, environment: hostgroup.puppet.environment)
-        assert host.hostgroup
+        hostgroup_puppet_facet = FactoryBot.create(:hostgroup_puppet_facet, :with_config_group)
+        host = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup_puppet_facet.hostgroup, environment: hostgroup_puppet_facet.environment)
+        assert host.hostgroup.reload
         assert_not_empty host.puppet.parent_classes
         assert_equal host.puppet.parent_classes, host.hostgroup.puppet.classes
       end
@@ -48,9 +48,9 @@ module ForemanPuppet
       test 'should not return parent classes that do not match environment' do
         # one class in the right env, one in a different env
         pclass2 = FactoryBot.create(:puppetclass, environments: [diff_environment])
-        hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc, puppetclasses: [puppetclass_both, pclass2], environment: environment)
-        host = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup, environment: diff_environment)
-        assert host.hostgroup
+        hostgroup_puppet_facet = FactoryBot.create(:hostgroup_puppet_facet, :with_config_group, puppetclasses: [puppetclass_both, pclass2], environment: environment)
+        host = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup_puppet_facet.hostgroup, environment: diff_environment)
+        assert host.hostgroup.reload
         assert_not_empty host.puppet.parent_classes
         assert_not_equal host.puppet.environment, host.hostgroup.puppet.environment
         assert_not_equal host.puppet.parent_classes, host.hostgroup.puppet.classes
@@ -65,9 +65,9 @@ module ForemanPuppet
 
     describe '#parent_config_groups' do
       test 'should return parent config_groups if host has hostgroup' do
-        hostgroup        = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_config_group)
-        host             = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup, environment: hostgroup.puppet.environment)
-        assert host.hostgroup
+        hostgroup_puppet_facet = FactoryBot.create(:hostgroup_puppet_facet, :with_config_group)
+        host = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup_puppet_facet.hostgroup, environment: hostgroup_puppet_facet.environment)
+        assert host.hostgroup.reload
         assert_equal host.puppet.parent_config_groups, host.hostgroup.puppet.config_groups
       end
 
@@ -105,8 +105,9 @@ module ForemanPuppet
 
       test 'available_puppetclasses should return environment-specific classes (and that are NOT already inherited by parent)' do
         puppetclass_both
-        hostgroup        = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass, environment: environment)
-        host             = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup, environment: environment)
+        hostgroup_puppet_facet = FactoryBot.create(:hostgroup_puppet_facet, :with_config_group)
+        host = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup_puppet_facet.hostgroup, environment: hostgroup_puppet_facet.environment)
+        host.hostgroup.reload
         assert_not_equal ForemanPuppet::Puppetclass.where(nil), host.puppet.available_puppetclasses
         assert_not_equal host.puppet.environment.puppetclasses.sort, host.puppet.available_puppetclasses.sort
         assert_equal (host.puppet.environment.puppetclasses - host.puppet.parent_classes).sort, host.puppet.available_puppetclasses.sort

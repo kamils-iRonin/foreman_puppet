@@ -6,11 +6,16 @@ module ForemanPuppet
       included do
         prepend PrependedMethods
 
-        env_assoc = reflect_on_association(:environment)
-        env_assoc&.instance_variable_set(:@class_name, 'ForemanPuppet::Environment')
+        if ForemanPuppet.extracted_from_core?
+          has_many :host_classes, foreign_key: :host_id, class_name: 'ForemanPuppet::HostClass', dependent: :destroy, inverse_of: :host
+          has_many :puppetclasses, through: :host_classes, dependent: :destroy
+        else
+          env_assoc = reflect_on_association(:environment)
+          env_assoc&.instance_variable_set(:@class_name, 'ForemanPuppet::Environment')
 
-        host_classes_assoc = reflect_on_association(:host_classes)
-        host_classes_assoc&.instance_variable_set(:@class_name, 'ForemanPuppet::HostClass')
+          host_classes_assoc = reflect_on_association(:host_classes)
+          host_classes_assoc&.instance_variable_set(:@class_name, 'ForemanPuppet::HostClass')
+        end
 
         include_in_clone puppet: %i[config_groups host_config_groups host_classes]
 

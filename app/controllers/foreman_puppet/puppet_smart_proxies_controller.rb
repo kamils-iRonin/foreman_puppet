@@ -35,5 +35,9 @@ module ForemanPuppet
       resource = 'smart_proxies' if resource == 'puppet_smart_proxies'
       super(resource)
     end
+
+    def resource_class
+      ::SmartProxy
+    end
   end
 end

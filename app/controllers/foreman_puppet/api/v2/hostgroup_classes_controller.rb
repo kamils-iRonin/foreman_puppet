@@ -40,6 +40,10 @@ module ForemanPuppet
           @hostgroup.puppet || @hostgroup.create_puppet
           @hostgroup
         end
+
+        def resource_class
+          ForemanPuppet::HostgroupClass
+        end
       end
     end
   end

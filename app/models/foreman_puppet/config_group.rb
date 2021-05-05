@@ -8,9 +8,9 @@ module ForemanPuppet
 
     validates_lengths_from_database
 
-    has_many :config_group_classes, dependent: :destroy
+    has_many :config_group_classes, dependent: :destroy, class_name: 'ForemanPuppet::ConfigGroupClass'
     has_many :puppetclasses, through: :config_group_classes
-    has_many :host_config_groups, dependent: :destroy
+    has_many :host_config_groups, dependent: :destroy, class_name: 'ForemanPuppet::HostConfigGroup'
     has_many_hosts through: :host_config_groups, source: :host, source_type: 'Host::Managed'
     has_many :hostgroups, through: :host_config_groups, source: :host, source_type: 'Hostgroup'
 

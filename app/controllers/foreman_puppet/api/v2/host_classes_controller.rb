@@ -53,6 +53,10 @@ module ForemanPuppet
                            end
           @puppetclass = resource_finder(Puppetclass.authorized(:view_puppetclasses), puppetclass_id)
         end
+
+        def resource_class
+          ForemanPuppet::HostClass
+        end
       end
     end
   end

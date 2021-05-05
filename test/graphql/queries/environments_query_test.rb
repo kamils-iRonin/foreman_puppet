@@ -33,7 +33,7 @@ module Queries
     test 'fetching environments attributes' do
       assert_empty result['errors']
 
-      expected_count = Environment.count
+      expected_count = ForemanPuppet::Environment.count
 
       assert_not_equal 0, expected_count
       assert_equal expected_count, data['totalCount']

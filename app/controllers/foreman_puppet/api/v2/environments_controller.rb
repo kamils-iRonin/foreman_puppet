@@ -85,6 +85,10 @@ module ForemanPuppet
         def allowed_nested_id
           %w[puppetclass_id location_id organization_id]
         end
+
+        def resource_class
+          ForemanPuppet::Environment
+        end
       end
     end
   end

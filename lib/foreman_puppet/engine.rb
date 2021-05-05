@@ -63,7 +63,8 @@ module ForemanPuppet
       Operatingsystem.include ForemanPuppet::Extensions::Operatingsystem
       Nic::Managed.include ForemanPuppet::Extensions::NicManaged
       Report.include ForemanPuppet::Extensions::Report
-      Taxonomy.include ForemanPuppet::Extensions::Taxonomy
+      Location.include ForemanPuppet::Extensions::Taxonomy
+      Organization.include ForemanPuppet::Extensions::Taxonomy
       User.include ForemanPuppet::Extensions::User
       TemplateCombination.include ForemanPuppet::Extensions::TemplateCombination
       ProvisioningTemplate.include ForemanPuppet::Extensions::ProvisioningTemplate

@@ -21,6 +21,18 @@ end
 FactoryBot.define do
   factory :common_puppet_facet do
     environment
+
+    trait :with_puppet_proxy do
+      puppet_proxy { FactoryBot.create(:smart_proxy) }
+    end
+
+    trait :with_puppet_ca_proxy do
+      puppet_ca_proxy { FactoryBot.create(:smart_proxy) }
+    end
+
+    trait :with_puppetclass do
+      puppetclasses { FactoryBot.create_list(:puppetclass, 1) }
+    end
   end
 
   factory :host_puppet_facet, parent: :common_puppet_facet, class: 'ForemanPuppet::HostPuppetFacet' do

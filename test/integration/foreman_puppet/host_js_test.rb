@@ -149,7 +149,7 @@ module ForemanPuppet
 
       context 'has inherited Puppetclasses' do
         test 'has the hostgroup inherited parameters visible' do
-          hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass)
+          hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc)
           host = FactoryBot.create(:host, :with_puppet_enc, hostgroup: hostgroup, environment: hostgroup.puppet.environment)
 
           visit edit_host_path(host)
@@ -165,7 +165,7 @@ module ForemanPuppet
       end
 
       describe 'Puppetclass Params' do
-        let(:host) { FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass) }
+        let(:host) { FactoryBot.create(:host, :with_puppet_enc) }
 
         test 'shows errors on invalid lookup values' do
           lookup_key = FactoryBot.create(:puppetclass_lookup_key,

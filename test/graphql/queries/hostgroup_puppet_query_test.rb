@@ -31,7 +31,7 @@ module Queries
       GRAPHQL
     end
 
-    let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass) }
+    let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc) }
     let(:global_id) { Foreman::GlobalId.encode('Hostgroup', hostgroup.id) }
     let(:variables) { { id: global_id } }
 

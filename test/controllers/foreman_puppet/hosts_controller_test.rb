@@ -18,8 +18,8 @@ module ForemanPuppet
     let(:environment2) { FactoryBot.create(:environment, organizations: [org], locations: [loc]) }
     let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc, environment: environment2, organizations: [org], locations: [loc]) }
     let(:host_defaults) { { hostgroup: hostgroup, environment: environment1, organization: org, location: loc } }
-    let(:host1) { FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass, host_defaults) }
-    let(:host2) { FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass, host_defaults) }
+    let(:host1) { FactoryBot.create(:host, :with_puppet_enc, host_defaults) }
+    let(:host2) { FactoryBot.create(:host, :with_puppet_enc, host_defaults) }
 
     test 'user with edit host rights with update environments should change environments' do
       @request.env['HTTP_REFERER'] = '/hosts'
@@ -91,7 +91,7 @@ module ForemanPuppet
       end
 
       test 'should not escape lookup values on environment change' do
-        host = FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass)
+        host = FactoryBot.create(:host, :with_puppet_enc)
 
         host.environment.locations = [host.location]
         host.environment.organizations = [host.organization]

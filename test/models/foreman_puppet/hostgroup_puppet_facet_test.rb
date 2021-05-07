@@ -2,15 +2,18 @@ require 'test_puppet_helper'
 
 module ForemanPuppet
   class HostgroupPuppetFacetTest < ActiveSupport::TestCase
-    let(:environment) { FactoryBot.create(:environment) }
-    let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass, :with_config_group, environment: environment) }
+    let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc) }
+    let(:environment) { hostgroup.puppet.environment }
     let(:child_hostgroup) do
       FactoryBot.create(:hostgroup,
-        :with_puppet_enc,
-        :with_puppetclass,
-        :with_config_group,
-        :with_parent,
-        parent: hostgroup, environment: environment)
+        puppet: FactoryBot.create(
+          :hostgroup_puppet_facet,
+          :with_config_group,
+          :with_puppet_proxy,
+          :with_puppet_ca_proxy,
+          environment: environment
+        ),
+        parent: hostgroup)
     end
     let(:standalone_puppetclass) { FactoryBot.create(:puppetclass) }
 

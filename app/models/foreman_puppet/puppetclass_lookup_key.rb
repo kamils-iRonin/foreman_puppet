@@ -1,8 +1,8 @@
 module ForemanPuppet
   class PuppetclassLookupKey < LookupKey
-    has_many :environment_classes, dependent: :destroy, inverse_of: :puppetclass_lookup_key
-    has_many :environments, -> { distinct }, through: :environment_classes
-    has_many :param_classes, through: :environment_classes, source: :puppetclass
+    has_many :environment_classes, dependent: :destroy, inverse_of: :puppetclass_lookup_key, class_name: 'ForemanPuppet::EnvironmentClass'
+    has_many :environments, -> { distinct }, through: :environment_classes, class_name: 'ForemanPuppet::Environment'
+    has_many :param_classes, through: :environment_classes, source: :puppetclass, class_name: 'ForemanPuppet::Puppetclass'
 
     before_validation :check_override_selected, if: -> { persisted? && @validation_context != :importer }
 

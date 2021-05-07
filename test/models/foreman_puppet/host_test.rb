@@ -32,7 +32,7 @@ module ForemanPuppet
     end
 
     describe '#search_for' do
-      let(:host) { FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass) }
+      let(:host) { FactoryBot.create(:host, :with_puppet_enc) }
 
       test 'can search hosts by smart proxy' do
         proxy = FactoryBot.create(:puppet_and_ca_smart_proxy)
@@ -62,14 +62,14 @@ module ForemanPuppet
       end
 
       test 'search hosts by inherited puppetclass from a hostgroup' do
-        hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass)
+        hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc)
         host_with_hg = FactoryBot.create(:host, hostgroup: hostgroup)
         result = Host.search_for("class = #{hostgroup.puppet.puppetclass_names.first}")
         assert_includes result, host_with_hg
       end
 
       test 'can search hosts by inherited puppet class from a parent hostgroup' do
-        parent_hg = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass)
+        parent_hg = FactoryBot.create(:hostgroup, :with_puppet_enc)
         hg = FactoryBot.create(:hostgroup, parent: parent_hg)
         host = FactoryBot.create(:host, hostgroup: hg)
         result = Host.search_for("class = #{parent_hg.puppet.puppetclass_names.first}")
@@ -137,8 +137,8 @@ module ForemanPuppet
 
     describe '#clone' do
       test '#classes etc. on cloned host return the same' do
-        hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_config_group, :with_puppetclass)
-        host = FactoryBot.create(:host, :with_puppet_enc, :with_config_group, :with_puppetclass, :with_parameter, hostgroup: hostgroup, environment: hostgroup.environment)
+        hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc)
+        host = FactoryBot.create(:host, :with_puppet_enc, :with_parameter, hostgroup: hostgroup, environment: hostgroup.environment)
         copy = host.clone
         assert_equal host.puppet.individual_puppetclasses.map(&:id), copy.puppet.individual_puppetclasses.map(&:id)
         assert_equal host.puppet.classes_in_groups.map(&:id), copy.puppet.classes_in_groups.map(&:id)
@@ -269,7 +269,7 @@ module ForemanPuppet
     end
 
     test 'when setting host environment to nil, its puppet classes should be removed' do
-      h = FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass)
+      h = FactoryBot.create(:host, :with_puppet_enc)
       h.puppet_proxy = nil
       h.puppet.environment = nil
       h.puppet.save!
@@ -277,7 +277,7 @@ module ForemanPuppet
     end
 
     test 'when setting host environment to nil, its config groups should be removed' do
-      h = FactoryBot.create(:host, :with_puppet_enc, :with_config_group)
+      h = FactoryBot.create(:host, :with_puppet_enc)
       assert h.save
       h.puppet_proxy = nil
       h.puppet.environment = nil

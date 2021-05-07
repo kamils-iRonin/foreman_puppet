@@ -3,7 +3,7 @@ require 'integration_test_helper'
 
 module ForemanPuppet
   class HostgroupJSTest < IntegrationTestWithJavascript
-    let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass) }
+    let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc) }
     let(:environment) { FactoryBot.create(:environment) }
 
     describe 'create new page' do

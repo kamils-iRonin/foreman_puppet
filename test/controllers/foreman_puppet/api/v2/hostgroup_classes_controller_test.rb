@@ -8,7 +8,7 @@ module ForemanPuppet
           @routes = ForemanPuppet::Engine.routes
         end
 
-        let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass) }
+        let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc) }
         let(:puppetclass) { FactoryBot.create(:puppetclass) }
 
         test 'should get puppetclass ids for hostgroup' do

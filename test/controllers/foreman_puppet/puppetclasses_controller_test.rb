@@ -59,7 +59,7 @@ module ForemanPuppet
       setup { puppetclass.class_params.each { |plk| plk.update(override: true) } }
 
       test 'new db rows are not added to HostClass when POST to parameters' do
-        host = FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass)
+        host = FactoryBot.create(:host, :with_puppet_enc)
         host_puppetclass_ids = host.host_classes.pluck(:puppetclass_id)
         params = {  id: puppetclass.id,
                     host_id: host.id,
@@ -71,7 +71,7 @@ module ForemanPuppet
 
       test 'new db rows are not added to HostgroupClass when POST to parameters' do
         skip 'dont know how to achieve for now' unless ForemanPuppet.extracted_from_core?
-        hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass)
+        hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc)
         hostgroup_puppetclass_ids = hostgroup.puppet.hostgroup_classes.pluck(:puppetclass_id)
         params = {  id: puppetclass.id,
                     host_id: hostgroup.id,

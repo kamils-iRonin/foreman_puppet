@@ -6,7 +6,7 @@ module ForemanPuppet
       class HostgroupsControllerTest < ActionController::TestCase
         tests ::Api::V2::HostgroupsController
 
-        let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass, :with_config_group) }
+        let(:hostgroup) { FactoryBot.create(:hostgroup, :with_puppet_enc) }
         let(:non_puppet) { FactoryBot.create(:hostgroup, ptable: templates(:autopart)) }
         let(:inherited) { FactoryBot.create(:hostgroup, :with_puppet_enc, parent: non_puppet) }
 

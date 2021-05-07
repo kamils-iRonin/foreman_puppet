@@ -75,8 +75,8 @@ module ForemanPuppet
         end
 
         test 'should get puppetclasses for given host only' do
-          host1 = FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass)
-          FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass)
+          host1 = FactoryBot.create(:host, :with_puppet_enc)
+          FactoryBot.create(:host, :with_puppet_enc)
           get :index, params: { host_id: host1.to_param }
           assert_response :success
           assert_equal host1.puppet.puppetclasses.map(&:name).sort, json_response['results'].keys.sort
@@ -89,7 +89,7 @@ module ForemanPuppet
         end
 
         test 'should get puppetclasses for hostgroup' do
-          hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass)
+          hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc)
           get :index, params: { hostgroup_id: hostgroup.to_param }
           assert_response :success
           assert_not json_response['results'].empty?
@@ -111,14 +111,14 @@ module ForemanPuppet
         end
 
         test 'should show puppetclass for host' do
-          host = FactoryBot.create(:host, :with_puppet_enc, :with_puppetclass)
+          host = FactoryBot.create(:host, :with_puppet_enc)
           get :show, params: { host_id: host.to_param, id: host.puppet.puppetclasses.first.id }
           assert_response :success
           assert_not_empty json_response
         end
 
         test 'should show puppetclass for hostgroup' do
-          hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc, :with_puppetclass)
+          hostgroup = FactoryBot.create(:hostgroup, :with_puppet_enc)
           get :show, params: { hostgroup_id: hostgroup.to_param, id: hostgroup.puppet.puppetclasses.first.id }
           assert_response :success
           assert_not_empty json_response

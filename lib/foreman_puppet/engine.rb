@@ -1,5 +1,24 @@
 module ForemanPuppet
   class Engine < ::Rails::Engine
+    config.before_configuration do
+      unless ForemanPuppet.extracted_from_core?
+        require 'graphql'
+
+        module BaseObjectClassMethodPath
+          def field(*args, **kwargs, &block)
+            return if args.first == :environment && args.second.to_s == 'Types::Environment'
+            return if args.first == :environments && args.second.node_type.to_s == 'Types::Environment'
+            return if args.first == :puppetclass && args.second.to_s == 'Types::Puppetclass'
+            return if args.first == :puppetclasses && args.second.node_type.to_s == 'Types::Puppetclass'
+
+            super
+          end
+        end
+
+        GraphQL::Types::Relay::BaseObject.extend(BaseObjectClassMethodPath)
+      end
+    end
+
     engine_name 'foreman_puppet'
     isolate_namespace ForemanPuppet
 
@@ -45,7 +64,8 @@ module ForemanPuppet
       Operatingsystem.include ForemanPuppet::Extensions::Operatingsystem
       Nic::Managed.include ForemanPuppet::Extensions::NicManaged
       Report.include ForemanPuppet::Extensions::Report
-      Taxonomy.include ForemanPuppet::Extensions::Taxonomy
+      Location.include ForemanPuppet::Extensions::Taxonomy
+      Organization.include ForemanPuppet::Extensions::Taxonomy
       User.include ForemanPuppet::Extensions::User
       TemplateCombination.include ForemanPuppet::Extensions::TemplateCombination
       ProvisioningTemplate.include ForemanPuppet::Extensions::ProvisioningTemplate
@@ -67,6 +87,13 @@ module ForemanPuppet
       end
       Foreman.input_types_registry.register(ForemanPuppet::InputType::PuppetParameterInput)
       ::ProxyStatus.status_registry.add(ForemanPuppet::ProxyStatus::Puppet)
+
+      # GraphQL
+      ::Types::Host.include(ForemanPuppet::Types::HostExtensions)
+      ::Types::Hostgroup.include(ForemanPuppet::Types::HostgroupExtensions)
+      ::Types::Location.include(ForemanPuppet::Types::LocationExtensions)
+      ::Types::Organization.include(ForemanPuppet::Types::OrganizationExtensions)
+      ::Mutations::Hosts::Create.include(ForemanPuppet::Mutations::Hosts::CreateExtensions)
     rescue StandardError => e
       Rails.logger.warn "ForemanPuppet: skipping engine hook (#{e})\n#{e.backtrace.join("\n")}"
     end

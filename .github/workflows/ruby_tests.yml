@@ -77,7 +77,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        foreman-core-branch: [hostgroup_facet-tempate_input]
+        foreman-core-branch: [develop]
         ruby-version: [2.5, 2.6]
         node-version: [12]
     steps:
@@ -86,7 +86,7 @@ jobs:
         uses: nanasess/setup-chromedriver@master
       - uses: actions/checkout@v2
         with:
-          repository: ezr-ondrej/foreman
+          repository: theforeman/foreman
           ref: ${{ matrix.foreman-core-branch }}
       - uses: actions/checkout@v2
         with:

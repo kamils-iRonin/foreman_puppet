@@ -69,17 +69,24 @@ jobs:
     needs: rubocop
     env:
       BUNDLE_WITHOUT: journald:development:console:libvirt
+      PUPPET_EXTRACTED: ${{ matrix.puppet-extracted }}
     services:
       postgres:
         image: postgres:12.1
         ports: ['5432:5432']
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        foreman-core-branch: [hostgroup_facet-tempate_input]
-        ruby-version: [2.5, 2.6]
+        foreman-core-branch: [puppet_extraction, hostgroup_facet-tempate_input]
+        ruby-version: [2.6]
         node-version: [12]
+        puppet-extracted: [0, 1]
+        exclude:
+          - foreman-core-branch: hostgroup_facet-tempate_input
+            puppet-extracted: 1
+          - foreman-core-branch: puppet_extraction
+            puppet-extracted: 0
     steps:
       - run: sudo apt-get install build-essential libcurl4-openssl-dev zlib1g-dev libpq-dev
       - name: Install chromedriver

@@ -1,9 +1,5 @@
 name: Ruby Testing
-on:
-  pull_request:
-  push:
-    branches:
-    - master
+on: push
 env:
   RAILS_ENV: test
   DATABASE_URL: postgresql://postgres:@localhost/test
@@ -77,10 +73,10 @@ jobs:
         ports: ['5432:5432']
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         foreman-repo: [theforeman/foreman]
-        foreman-core-branch: [develop]
+        foreman-core-branch: [3.0-stable, develop]
         ruby-version: [2.7]
         node-version: [12]
     steps:
@@ -105,12 +101,10 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
       - name: Setup Node
-        if: github.event_name != 'push'
         uses: actions/setup-node@v1
         with:
           node-version:  ${{ matrix.node-version }}
       - name: Prepare test DB
-        if: github.event_name != 'push'
         run: |
           bundle exec rake db:create
           bundle exec rake db:migrate
@@ -120,16 +114,13 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-modules-${{ matrix.node-version }}-${{ hashFiles('package.json') }}
       - name: Prepare webpack
-        if: github.event_name != 'push'
         run: |
           npm install
           bundle exec rake webpack:compile
       - name: Run plugin tests
-        if: github.event_name != 'push'
         run: |
           bundle exec rake test:foreman_puppet
       - name: Run access permission test
-        if: ${{ github.event_name != 'push' }}
         run: |
           bundle exec rake test TEST="test/unit/foreman/access_permissions_test.rb"
       - name: Upload test.log
